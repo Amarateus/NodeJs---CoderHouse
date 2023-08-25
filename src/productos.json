@@ -1,11 +1,44 @@
 [
 	{
 		"id": 0,
-		"title": "Mancuerna",
+		"title": "Macuerna",
 		"category": "Pesas",
 		"description": "Mancuerna de 5kg",
 		"price": 5000,
 		"code": "0000",
+		"stock": 10,
+		"thumbnail": "img",
+		"status": true
+	},
+	{
+		"id": 1,
+		"title": "Macuerna",
+		"category": "Pesas",
+		"description": "Mancuerna de 5kg",
+		"price": 5000,
+		"code": "0001",
+		"stock": 10,
+		"thumbnail": "img",
+		"status": true
+	},
+	{
+		"id": 2,
+		"title": "Macuerna",
+		"category": "Pesas",
+		"description": "Mancuerna de 5kg",
+		"price": 5000,
+		"code": "0002",
+		"stock": 10,
+		"thumbnail": "img",
+		"status": true
+	},
+	{
+		"id": 3,
+		"title": "Macuerna",
+		"category": "Pesas",
+		"description": "Mancuerna de 5kg",
+		"price": 5000,
+		"code": "0003",
 		"stock": 10,
 		"thumbnail": "img",
 		"status": true

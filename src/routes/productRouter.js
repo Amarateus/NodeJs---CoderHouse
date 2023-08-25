@@ -1,10 +1,8 @@
 import {
     Router
 } from "express";
-import ProductManager from "../productManager.js"
+import productManager from "../app.js";
 
-// Instancio la clase
-const productManager = new ProductManager()
 
 const router = Router()
 

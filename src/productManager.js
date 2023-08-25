@@ -3,7 +3,6 @@ import * as fs from "fs"
 
 class ProductManager {
     path
-    static id = 0
 
     constructor() {
         this.path = "./src/productos.json"
@@ -16,7 +15,7 @@ class ProductManager {
         }
 
         const product = {
-            id: ProductManager.id,
+            id: 0,
             title,
             category,
             description,
@@ -27,31 +26,32 @@ class ProductManager {
             status
         }
 
-        
-        ProductManager.id++
-
         // corrobora que exista el archivo
         if (fs.existsSync(this.path)) {
             // trae el contenido
             const fileContent = fs.readFileSync(this.path, 'utf-8');
             // parsea el contenido listas y objetos
             const contentObj = JSON.parse(fileContent);
+            product.id = contentObj.length
+            if (product.id !== 1) {
+                product.id - 1
+            }
             // corroboro si el producto ya existe
-            if (contentObj.find((element) => element.id === product.id)) {
-                return console.log("El producto ya existe")
+            if (contentObj.find((element) => element.code === product.code)) {
+                return {error: "El producto ya existe"}
             }
             // si no existe, lo agrego
             contentObj.push(product)
             // guardo el archivo con los cambios
             fs.writeFileSync(this.path, JSON.stringify(contentObj, null, "\t"))
             
-            return `${product.title} ha sido agregado correctamente`
+            return {succes: `${product.title} ha sido agregado correctamente`}
             // si el archivo no existe:
         } else {
             const products = []
             products.push(product)
             fs.writeFileSync(this.path, JSON.stringify(products, null, "\t"))
-            return `El archivo productos.json ha sido creado y el producto ${product.title} ha sido agregado correctamente`
+            return {succes: `El archivo productos.json ha sido creado y el producto ${product.title} ha sido agregado correctamente`}
         }
     }
 
