@@ -1,4 +1,4 @@
-### 3ra pre-entrega 
+### 1ra pre-entrega 
 
 - De ser necesario instalar dependencias: **npm i**
 - Arrancar el servidor en consola con el comando: **npm start**
