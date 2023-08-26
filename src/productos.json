@@ -1,7 +1,7 @@
 [
 	{
 		"id": 0,
-		"title": "Macuerna",
+		"title": "Mancuerna",
 		"category": "Pesas",
 		"description": "Mancuerna de 5kg",
 		"price": 5000,
@@ -12,34 +12,23 @@
 	},
 	{
 		"id": 1,
-		"title": "Macuerna",
+		"title": "Barra",
 		"category": "Pesas",
-		"description": "Mancuerna de 5kg",
-		"price": 5000,
+		"description": "Barra olimpica de 20kg",
+		"price": 20000,
 		"code": "0001",
-		"stock": 10,
+		"stock": 7,
 		"thumbnail": "img",
 		"status": true
 	},
 	{
 		"id": 2,
-		"title": "Macuerna",
-		"category": "Pesas",
-		"description": "Mancuerna de 5kg",
-		"price": 5000,
+		"title": "Elastico",
+		"category": "Elasticos",
+		"description": "Elastico de media tension",
+		"price": 3000,
 		"code": "0002",
-		"stock": 10,
-		"thumbnail": "img",
-		"status": true
-	},
-	{
-		"id": 3,
-		"title": "Macuerna",
-		"category": "Pesas",
-		"description": "Mancuerna de 5kg",
-		"price": 5000,
-		"code": "0003",
-		"stock": 10,
+		"stock": 15,
 		"thumbnail": "img",
 		"status": true
 	}

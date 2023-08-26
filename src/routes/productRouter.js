@@ -22,8 +22,8 @@ router.get("/", (req, res) => {
 
 router.get("/:pid", (req, res) => {
     const productId = parseInt(req.params.pid, 10)
-    const selectedProduct = productManager.getProductById(productId)
-    res.send(selectedProduct)
+    const respuesta = productManager.getProductById(productId)
+    res.send(respuesta)
 })
 
 router.post("/", (req, res) => {
@@ -37,11 +37,32 @@ router.post("/", (req, res) => {
     } = req.body
     const respuesta = productManager.addProduct(title, category, description, price, code, stock)
 
-    if (respuesta.error){
+    if (respuesta.error) {
         return res.status(400).send(respuesta)
     }
 
     res.status(201).send(respuesta)
+})
+
+router.put("/:pid", (req, res) => {
+    const productId = parseInt(req.params.pid, 10)
+    const newProduct = req.body
+    const respuesta = productManager.updateProduct(productId, newProduct)
+
+    if (respuesta.error) {
+        return res.status(400).send(respuesta)
+    }
+    res.send(respuesta)
+})
+
+router.delete("/:pid", (req, res) => {
+    const productId = parseInt(req.params.pid, 10)
+    const respuesta = productManager.deleteProductById(productId)
+
+    if (respuesta.error) {
+        return res.status(400).send(respuesta)
+    }
+    res.send(respuesta)
 })
 
 // export router

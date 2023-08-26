@@ -60,75 +60,70 @@ class ProductManager {
             const products = fs.readFileSync(this.path)
             return JSON.parse(products)
         } else {
-            return "No se han registrado productos"
+            return {error: "No se han registrado productos"}
         }
 
     }
 
     getProductById(id) {
+        const products = this.getProducts()
+        if ( products.error ) {
+            return products
+        }
 
-        if (fs.existsSync(this.path)) {
-            const products = fs.readFileSync(this.path)
-            const productsObj = JSON.parse(products)
-            const wantedProduct = productsObj.find((element) => element.id === id)
-            if (wantedProduct === undefined) {
-                return "Producto no encontrado"
-            } else {
-                return wantedProduct
-            }
-
+        const wantedProduct = products.find((element) => element.id === id)
+        if (wantedProduct === undefined) {
+            return {error: "Producto no encontrado"}
         } else {
-            return "Archivo no encontrado"
+            return wantedProduct
         }
     }
 
     deleteProductById(id) {
-        const products = fs.readFileSync(this.path)
-        const productsObj = JSON.parse(products)
-        if (!productsObj.find((element) => element.id === id)) {
-            return console.log("El id ingresado para eliminar no correcponde a ningun producto")
+        const products = this.getProducts()
+        if ( products.error ) {
+            return products
         }
 
-        const newList = productsObj.filter((elemento) => elemento.id !== id)
+        if (!products.find((element) => element.id === id)) {
+            return {error: "El id ingresado para eliminar no correcponde a ningun producto"}
+        }
+
+        const newList = products.filter((elemento) => elemento.id !== id)
         fs.writeFileSync(this.path, JSON.stringify(newList, null, "\t"))
-        console.log(newList)
-        return console.log(`Producto con id: ${id} eliminado`)
+        
+        return {success: `Producto con id: ${id} eliminado`}
     }
 
     updateProduct(id, newProduct) {
-        const products = fs.readFileSync(this.path)
-        const productsObj = JSON.parse(products)
-        const wantedProduct = productsObj.map((element) => {
+        const products = this.getProducts()
+        if ( products.error ) {
+            return products
+        }
+        
+        const wantedProduct = products.find((element) => element.id === id)
+            if (wantedProduct === undefined) {
+                return {error: "Producto no encontrado"}
+            }
+
+        const nuevaLista = products.map((element) => {
             if (element.id !== id) {
                 return element
             } else {
                 element = {
-                    id: id,
-                    title: newProduct.title,
-                    description: newProduct.description,
-                    price: newProduct.price,
-                    thumbnail: newProduct.thumbnail,
-                    code: newProduct.code,
-                    stock: newProduct.stock
+                    ...element,
+                    ...newProduct
                 }
-                console.log(element)
+
                 return element
             }
         })
 
-        fs.writeFileSync(this.path, JSON.stringify(wantedProduct, null, "\t"))
+        fs.writeFileSync(this.path, JSON.stringify(nuevaLista, null, "\t"))
 
-        return console.log(`Producto con id: ${id} actualizado`)
+        return {success: `Producto con id: ${id} actualizado`}
     }
 
 }
 
 export default ProductManager
-
-// console.log("\n\nAgrego productos")
-// productManager.addProduct("Manzana", "Fruta de arbol", 150, "img", 1, 30)
-// productManager.addProduct("Pera", "Fruta de arbol", 100, "img", 2, 10)
-// productManager.addProduct("Banana", "Fruta de arbol", 170, "img", 3, 15)
-// productManager.addProduct("Sandia", "Fruta grande", 370, "img", 4, 7)
-// productManager.addProduct("Kiwi", "Fruta acida", 230, "img", 5, 18)
-// productManager.addProduct("Durazno", "Fruta con cascara", 300, "img", 6, 17)
