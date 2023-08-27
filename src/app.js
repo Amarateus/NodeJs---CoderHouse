@@ -1,8 +1,6 @@
 import express from "express"
 import productRouter from "./routes/productRouter.js"
-import ProductManager from "./productManager.js"
-
-const productManager = new ProductManager()
+import cartRouter from "./routes/cartRouter.js"
 
 // Config del server
 const app = express()
@@ -13,9 +11,9 @@ app.use(express.urlencoded({
 
 app.use("/api/products", productRouter)
 
+app.use("/api/carts", cartRouter)
+
 // Server listener
 app.listen(8080, () => {
     console.log("Listening on Port 8080")
 })
-
-export default productManager
