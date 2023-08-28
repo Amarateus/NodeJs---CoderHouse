@@ -42,5 +42,16 @@
 		"stock": 20,
 		"thumbnail": "img",
 		"status": true
+	},
+	{
+		"id": 4,
+		"title": "TRX",
+		"category": "Calisthenics",
+		"description": "TRX de medidas regulables con manijas",
+		"price": 5000,
+		"code": "0004",
+		"stock": 5,
+		"thumbnail": "img",
+		"status": true
 	}
 ]

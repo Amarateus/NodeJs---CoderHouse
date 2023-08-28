@@ -28,22 +28,19 @@ class ProductManager {
 
         // corrobora que exista el archivo
         if (fs.existsSync(this.path)) {
-            // trae el contenido
-            const fileContent = fs.readFileSync(this.path, 'utf-8');
-            // parsea el contenido listas y objetos
-            const contentObj = JSON.parse(fileContent);
-            product.id = contentObj.length
-            if (product.id !== 1) {
-                product.id - 1
-            }
+            // trae el contenido y parsea el contenido listas y objetos
+            const fileContent = JSON.parse(fs.readFileSync(this.path, 'utf-8'))
+            // asigno el id incrementando en 1 en relacion al id del ultimo elemento del array
+            product.id = fileContent[fileContent.length - 1].id + 1
+
             // corroboro si el producto ya existe
-            if (contentObj.find((element) => element.code === product.code)) {
+            if (fileContent.find((element) => element.code === product.code)) {
                 return {error: "El producto ya existe"}
             }
             // si no existe, lo agrego
-            contentObj.push(product)
+            fileContent.push(product)
             // guardo el archivo con los cambios
-            fs.writeFileSync(this.path, JSON.stringify(contentObj, null, "\t"))
+            fs.writeFileSync(this.path, JSON.stringify(fileContent, null, "\t"))
             
             return {succes: `${product.title} ha sido agregado correctamente`}
             // si el archivo no existe:
