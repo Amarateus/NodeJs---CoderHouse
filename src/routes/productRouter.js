@@ -42,6 +42,7 @@ router.post("/", (req, res) => {
         return res.status(400).send(respuesta)
     }
 
+    req.context.socketServer.emit('nuevoProducto', {mensaje: "Se añadio un producto"})
     res.status(201).send(respuesta)
 })
 

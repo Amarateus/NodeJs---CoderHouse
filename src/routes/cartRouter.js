@@ -44,6 +44,4 @@ router.post("/:cid/product/:pid", (req, res)=>{
     res.status(201).send(respuesta)
 })
 
-
-
 export default router
