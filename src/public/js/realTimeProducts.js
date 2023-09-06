@@ -1,14 +1,9 @@
 const socket = io()
 
-const productos = document.getElementById("productos")
+const contenedor = document.getElementById("contenedor")
 
-socket.on('productosActualizados', ({productosActualizados})=>{
-    productos.innerHTML = `
-    <ul>
-    {{#each productosActualizados}}
-      <li>
-        {{this.title}}
-      </li>
-    {{/each}}
-    </ul>`
+socket.on('productos', (productos) => {
+  const titleProductos = productos.map((producto) => producto.title)
+  
+  contenedor.innerHTML = titleProductos.join('<br>');
 })

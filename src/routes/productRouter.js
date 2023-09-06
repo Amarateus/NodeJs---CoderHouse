@@ -42,7 +42,7 @@ router.post("/", (req, res) => {
         return res.status(400).send(respuesta)
     }
 
-    req.context.socketServer.emit('nuevoProducto', {mensaje: "Se añadio un producto"})
+    req.context.socketServer.emit('productos', productManager.getProducts())
     res.status(201).send(respuesta)
 })
 
@@ -54,6 +54,7 @@ router.put("/:pid", (req, res) => {
     if (respuesta.error) {
         return res.status(400).send(respuesta)
     }
+    req.context.socketServer.emit('productos', productManager.getProducts())
     res.send(respuesta)
 })
 
@@ -64,6 +65,8 @@ router.delete("/:pid", (req, res) => {
     if (respuesta.error) {
         return res.status(400).send(respuesta)
     }
+    
+    req.context.socketServer.emit('productos', productManager.getProducts())
     res.send(respuesta)
 })
 

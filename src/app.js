@@ -45,12 +45,5 @@ app.use("/", viewsRouter)
 socketServer.on('connection', (socket) => {
     console.log(`Se conectó el usuario con socket id: ${socket.id}`);
 
-    socket.on('nuevoProducto', (data)=>{
-        const mensaje = data.mensaje
-
-        const productosActualizados = productManager.getProducts()
-        
-        socketServer.emit('productosActualizados', {productosActualizados})
-
-    })
+    socketServer.emit('productos', productManager.getProducts())
 });

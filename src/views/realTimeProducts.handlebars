@@ -1,18 +1,5 @@
-<div>
-  {{#if productos.error}}
-    <p>{{productos.error}}</p>
-  {{else}}
-    <h1>Productos agregados hasta el momento:</h1>
-    <ul>
-      {{#each productos}}
-        <li>
-          {{this.title}}
-        </li>
-      {{/each}}
-    </ul>
-
-  {{/if}}
-</div>
+<h1>Productos:</h1>
+<div id="contenedor"></div>
 
 
 <script src="/socket.io/socket.io.js"></script>
