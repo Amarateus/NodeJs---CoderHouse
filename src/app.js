@@ -1,49 +1,33 @@
 // trabajando desde el back
 import express from "express"
-import {
-    Server
-} from 'socket.io'
+// import {Server} from 'socket.io'
 import handlebars from 'express-handlebars'
-import viewsRouter from './routes/viewsRouter.js'
-import productRouter from "./routes/productRouter.js"
-import cartRouter from "./routes/cartRouter.js"
-import ProductManager from "./productManager.js"
-
-const productManager = new ProductManager()
+import ProductManager from "./dao/fs/productManager.js"
+import mongoose from 'mongoose'
+import productRouter from './routes/productRouter.js'
+import cartRouter from './routes/cartRouter.js'
 
 // Config del server
 const app = express()
 const httpServer = app.listen(8080, () => {
     console.log("Listening on Port 8080")
 })
-const socketServer = new Server(httpServer)
+// const socketServer = new Server(httpServer)
 
+// conexion a BD
+mongoose.connect('mongodb+srv://mateocv759:pDCXwZ7aBxuHlh1a@ecommerce.aiopsql.mongodb.net/ecommerce?retryWrites=true&w=majority')
+
+// config
 app.engine('handlebars', handlebars.engine());
 app.set('views', './src/views');
 app.set('view engine', 'handlebars');
 
+// middlewares
 app.use(express.static('./src/public'));
 app.use(express.json())
 app.use(express.urlencoded({
     extended: true
 }))
 
-app.use((req, res, next) => {
-    req.context = {
-        socketServer
-    }
-    next()
-})
-
 app.use("/api/products", productRouter)
-
 app.use("/api/carts", cartRouter)
-
-
-app.use("/", viewsRouter)
-
-socketServer.on('connection', (socket) => {
-    console.log(`Se conectó el usuario con socket id: ${socket.id}`);
-
-    socketServer.emit('productos', productManager.getProducts())
-});

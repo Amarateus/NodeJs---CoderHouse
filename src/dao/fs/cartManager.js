@@ -8,7 +8,7 @@ class CartManager {
         this.path = "./src/carritos.json"
     }
 
-    getCarritos() {
+    getAllCarts() {
         if (fs.existsSync(this.path)) {
             const carritos = JSON.parse(fs.readFileSync(this.path, 'utf-8'))
             return carritos
