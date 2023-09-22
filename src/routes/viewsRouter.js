@@ -6,15 +6,8 @@ const router = Router()
 
 // rutas
 router.get("/", (req, res) => {
-    const productos = productManager.getProducts()
-
-    res.render('home', {
-        productos
-    })
+    res.render('chat', {})
 })
 
-router.get("/realTimeProducts", (req, res) => {
-    res.render('realTimeProducts', {})
-})
 
 export default router
