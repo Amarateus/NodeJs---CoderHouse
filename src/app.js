@@ -1,38 +1,50 @@
-// const express = require("express")
+// trabajando desde el back
 import express from "express"
-import ProductManager from "./productManager.js"
+import {
+    Server
+} from 'socket.io'
+import handlebars from 'express-handlebars'
+import mongoose from 'mongoose'
+import productRouter from './routes/productRouter.js'
+import cartRouter from './routes/cartRouter.js'
+import viewsRouter from './routes/viewsRouter.js'
+import { messageModel } from "./dao/models/message.model.js"
 
-// Instancio la clase
-const productManager = new ProductManager()
+// conexion a BD
+mongoose.connect('mongodb+srv://mateocv759:pDCXwZ7aBxuHlh1a@ecommerce.aiopsql.mongodb.net/ecommerce?retryWrites=true&w=majority')
 
 // Config del server
 const app = express()
+const httpServer = app.listen(8080, () => {
+    console.log("Listening on Port 8080")
+})
+const socketServer = new Server(httpServer)
+
+// config
+app.engine('handlebars', handlebars.engine());
+app.set('views', './src/views');
+app.set('view engine', 'handlebars');
+
+// middlewares
+app.use('/static', express.static('./public'));
+app.use(express.json())
 app.use(express.urlencoded({
     extended: true
 }))
 
-// Rutas
-app.get("/products", (req, res) => {
-    const products = productManager.getProducts()
-    const limit = parseInt(req.query.limit, 10)
-    console.log(limit)
-    if (limit) {
-        const limitList = []
-        for (let i = 0; i < limit && i < products.length; i++) {
-            limitList.push(products[i])
-        }
-        return res.send(limitList)
-    }
-    res.send(products)
-})
+// routes
+app.use("/api/products", productRouter)
+app.use("/api/carts", cartRouter)
+app.use("/api/chat", viewsRouter)
 
-app.get("/products/:pid", (req, res) => {
-    const productId = parseInt(req.params.pid, 10)
-    const selectedProduct = productManager.getProductById(productId)
-    res.send(selectedProduct)
-})
+// socketServer
+socketServer.on('connection', (socket) => {
+    console.log('Se conectó', socket.id)
 
-// Server listener
-app.listen(8080, () => {
-    console.log("Listening on Port 8080")
+    socket.on("mensaje", async (data) => {
+        await messageModel.create(data)
+        const mensajes = await messageModel.find().lean()
+
+        socketServer.emit("nuevoMensaje", mensajes)
+    })
 })
