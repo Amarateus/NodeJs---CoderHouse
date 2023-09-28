@@ -8,25 +8,29 @@ const productManager = new ProductManager()
 const router = Router()
 
 // Rutas
+
+// traer todos los productos
+// puede recibir un limite de productos a devolver
 router.get("/", async (req, res) => {
-    const products = await productManager.getProducts()
-    const limit = parseInt(req.query.limit, 10)
-    if (limit) {
-        const limitList = []
-        for (let i = 0; i < limit && i < products.length; i++) {
-            limitList.push(products[i])
-        }
-        return res.send(limitList)
-    }
-    res.send(products)
+    const limit = req.query.limit ? parseInt(req.query.limit, 10) : 10
+    const page = req.query.page ? parseInt(req.query.page, 10) : 1
+    // la query se recibe con el formato ?query={"nombre": "Mateo"}
+    const query = req.query.query ? req.query.query : {}
+    const sort = req.query.sort ? parseInt(req.query.sort, 10) : 1
+
+    const products = await productManager.getProducts(limit, page, query, sort)
+
+    res.render('products', {products})
 })
 
+// traer un producto por su id
 router.get("/:pid", async (req, res) => {
     const productId = req.params.pid
     const respuesta = await productManager.getProductById(productId)
-    res.send(respuesta)
+    res.status(200).send(respuesta)
 })
 
+// crear un producto
 router.post("/", async (req, res) => {
     const {
         title,
@@ -42,26 +46,34 @@ router.post("/", async (req, res) => {
         return res.status(400).send(respuesta)
     }
 
-    res.status(201).send(respuesta)
+    res.status(201).send(`El producto ${respuesta.title} se creo correctamente`)
 })
 
-router.put("/:pid", async(req, res) => {
+// actualizar un producto
+router.put("/:pid", async (req, res) => {
     const productId = req.params.pid
     const newProduct = req.body
     const respuesta = await productManager.updateProduct(productId, newProduct)
 
     if (respuesta.error) {
         return res.status(400).send(respuesta)
+    } else if (respuesta.acknowledged === false) {
+        return res.status(400).send("El campo que desea actualizar no existe")
     }
 
-    res.send(respuesta)
+    res.status(201).send(respuesta)
 })
 
+// eliminar un producto
 router.delete("/:pid", async (req, res) => {
     const productId = req.params.pid
     const respuesta = await productManager.deleteProductById(productId)
-    
-    res.send(respuesta)
+
+    if (respuesta.error) {
+        res.status(400).send(respuesta)
+    }
+
+    res.status(200).send(`El producto con id ${productId} fue eliminado`)
 })
 
 // export router

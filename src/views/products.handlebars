@@ -1,0 +1,19 @@
+<div>
+  {{#each products.payload}}
+    <div>
+      <p>{{this.title}}</p>
+    </div>
+  {{/each}}
+</div>
+<br />
+<div>
+  {{#if products.hasPrevPage}}
+    <a href={{products.prevLink}}>Pagina anterior</a>
+  {{/if}}
+  &nbsp;
+  {{products.page}}
+  &nbsp;
+  {{#if products.hasNextPage}}
+    <a href={{products.nextLink}}>Siguiente pagina</a>
+  {{/if}}
+</div>

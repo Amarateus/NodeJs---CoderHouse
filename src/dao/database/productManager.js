@@ -4,9 +4,35 @@ import {
 
 export default class ProductManager {
     // traer todos los productos
-    async getProducts() {
-        const products = productModel.find().lean()
-        return products
+    async getProducts(limit, page, query, sort) {
+
+        let objQuery = query
+        if (typeof(query) === "string") {
+            objQuery = JSON.parse(query)
+        }
+
+        const pag = await productModel.paginate(objQuery, {
+            page: page,
+            limit: limit,
+            sort: {price: sort},
+            lean: true
+        })
+
+        const queryString = JSON.stringify(objQuery)
+
+        const devolucion = {
+            status: pag.docs.length > 0 ? "Succes" : "Error",
+            payload: pag.docs,
+            prevPage: pag.prevPage,
+            nextPage: pag.nextPage,
+            page: page,
+            hasPrevPage: pag.hasPrevPage,
+            hasNextPage: pag.hasNextPage,
+            prevLink: pag.hasPrevPage ? `http://localhost:8080/api/products?page=${pag.prevPage}&limit=${limit}&sort=${sort}&query=${query}` : null,
+            nextLink: pag.hasNextPage ? `http://localhost:8080/api/products?page=${pag.nextPage}&limit=${limit}&sort=${sort}&query=${queryString}` : null,
+        }
+
+        return devolucion
     }
 
     // agregar un producto a la BD
@@ -19,12 +45,13 @@ export default class ProductManager {
         }
 
         // corroboro que el producto no este registrado aun
-        const productExist = await productModel.find({code: code})
-        console.log(productExist)
+        const productExist = await productModel.find({
+            code: code
+        })
 
         if (productExist.length === 1) {
             return {
-                Error: "El producto ya esta registrado"
+                error: "El producto ya esta registrado"
             }
         }
 
@@ -43,21 +70,45 @@ export default class ProductManager {
 
     // traer un producto por su id
     async getProductById(id) {
-        const product = await productModel.findOne({_id: id}).lean()
-        
-        return product
+        try {
+            const product = await productModel.findOne({
+                _id: id
+            }).lean()
+
+            return product
+        } catch {
+            return {
+                error: `No se hayo el producto con id: ${id}`
+            }
+        }
     }
 
     // actualizar un producto
     async updateProduct(id, newProduct) {
-        const update = productModel.updateOne({_id: id}, newProduct)
+        try {
+            const update = await productModel.updateOne({
+                _id: id
+            }, newProduct)
 
-        return update
+            return update
+        } catch {
+            return {
+                error: `El producto con id: ${id} no fue encontrado`
+            }
+        }
     }
 
-    async deleteProductById (id) {
-        const deleteProduct = productModel.deleteOne({_id: id})
+    async deleteProductById(id) {
+        try {
+            const deleteProduct = await productModel.deleteOne({
+                _id: id
+            })
 
-        return deleteProduct
+            return deleteProduct
+        } catch {
+            return {
+                error: `El producto con id: ${id} no existe`
+            }
+        }
     }
 }
