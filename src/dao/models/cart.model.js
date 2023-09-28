@@ -13,11 +13,6 @@ const cartSchema = new mongoose.Schema({
         }, ],
         default: [],
     },
-    // products: {
-    //     type: Array,
-    //     required: true,
-    //     default: []
-    // }
 });
 
 const cartModel = mongoose.model(cartCollection, cartSchema);
