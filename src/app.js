@@ -8,10 +8,15 @@ import mongoose from 'mongoose'
 import productRouter from './routes/productRouter.js'
 import cartRouter from './routes/cartRouter.js'
 import viewsRouter from './routes/viewsRouter.js'
-import { messageModel } from "./dao/models/message.model.js"
+import {
+    messageModel
+} from "./dao/models/message.model.js"
 
 // conexion a BD
-mongoose.connect('mongodb+srv://mateocv759:pDCXwZ7aBxuHlh1a@ecommerce.aiopsql.mongodb.net/ecommerce?retryWrites=true&w=majority')
+const environment = async () => {
+    await mongoose.connect('mongodb+srv://mateocv759:pDCXwZ7aBxuHlh1a@ecommerce.aiopsql.mongodb.net/ecommerce?retryWrites=true&w=majority')
+}
+await environment()
 
 // Config del server
 const app = express()
@@ -35,7 +40,8 @@ app.use(express.urlencoded({
 // routes
 app.use("/api/products", productRouter)
 app.use("/api/carts", cartRouter)
-app.use("/api/chat", viewsRouter)
+// app.use("/api/chat", viewsRouter)
+app.use("/api/productCards", viewsRouter)
 
 // socketServer
 socketServer.on('connection', (socket) => {

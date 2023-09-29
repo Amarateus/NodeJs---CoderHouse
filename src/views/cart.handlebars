@@ -1,0 +1,8 @@
+<h3>
+    Productos del carrito con id {{respuesta._id}}:
+</h3>
+<div>
+    {{#each respuesta.products}}
+        <div>{{this.product.title}}: {{this.quantity}}</div>
+    {{/each}}
+</div>
