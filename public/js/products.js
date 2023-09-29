@@ -4,8 +4,6 @@
 
 const botones = document.getElementsByClassName("boton")
 const ids = document.getElementsByClassName("id")
-console.log(botones[0].innerHTML)
-console.log(ids[0].innerHTML)
 
 const crear_evento = (boton, id) => {
     boton.onclick = async () => {
