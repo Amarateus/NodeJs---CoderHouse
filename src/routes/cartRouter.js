@@ -25,11 +25,11 @@ router.post("/", async (req, res) => {
 router.get("/:cid", async (req, res) => {
     const idCarrito = req.params.cid
     const respuesta = await cartManager.getCarritoPorId(idCarrito)
-
+    console.log(respuesta)
     if (respuesta.error) {
         res.status(404).send(respuesta)
     } else {
-        res.status(200).send(respuesta)
+        res.render('cart', {respuesta})
     }
 })
 

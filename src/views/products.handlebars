@@ -1,7 +1,13 @@
 <div>
   {{#each products.payload}}
     <div>
-      <p>{{this.title}}</p>
+      <h3>{{this.title}}</h3>
+      <div>Categoria: {{this.category}}</div>
+      <div>Descripcion: {{this.description}}</div>
+      <div>Precio: ${{this.price}}</div>
+      <div>Stock: {{this.stock}}</div>
+      <div id="id">{{this._id}}</div>
+      <button id="addCart" type="submit" value="submit">Agregar al carrito</button>
     </div>
   {{/each}}
 </div>
@@ -10,10 +16,13 @@
   {{#if products.hasPrevPage}}
     <a href={{products.prevLink}}>Pagina anterior</a>
   {{/if}}
-  &nbsp;
+  &nbsp; Pag:
   {{products.page}}
   &nbsp;
   {{#if products.hasNextPage}}
     <a href={{products.nextLink}}>Siguiente pagina</a>
   {{/if}}
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/static/js/products.js"></script>

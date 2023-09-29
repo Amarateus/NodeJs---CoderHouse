@@ -20,6 +20,7 @@ router.get("/", async (req, res) => {
 
     const products = await productManager.getProducts(limit, page, query, sort)
 
+
     res.render('products', {products})
 })
 

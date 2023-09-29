@@ -40,7 +40,8 @@ app.use(express.urlencoded({
 // routes
 app.use("/api/products", productRouter)
 app.use("/api/carts", cartRouter)
-app.use("/api/chat", viewsRouter)
+// app.use("/api/chat", viewsRouter)
+app.use("/api/productCards", viewsRouter)
 
 // socketServer
 socketServer.on('connection', (socket) => {

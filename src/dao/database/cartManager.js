@@ -52,8 +52,10 @@ export default class CartManager {
         }
 
         const cartProducts = cartExist.products
+        
+        const producto = await productManager.getProductById(idProduct)
 
-        const productExist = cartProducts.find((product) => product.product === idProduct)
+        const productExist = cartProducts.find((product) => product.product.code === producto.code)
 
         if (productExist === undefined) {
             const newProduct = {
