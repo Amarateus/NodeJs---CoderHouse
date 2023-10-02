@@ -1,4 +1,8 @@
 <div>
+  <h1>Bienvenid@ {{first_name}}</h1>
+  <h3>rol: {{rol}}</h3>
+  <a href="/logout">Cerrar sesion</a>
+  <br><br><br>
   {{#each products.payload}}
     <div>
       <h3>{{this.title}}</h3>

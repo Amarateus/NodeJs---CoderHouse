@@ -8,9 +8,13 @@ import mongoose from 'mongoose'
 import productRouter from './routes/productRouter.js'
 import cartRouter from './routes/cartRouter.js'
 import viewsRouter from './routes/viewsRouter.js'
+import sessionRouter from './routes/sessionRouter.js'
+import userRouter from './routes/userRouter.js'
 import {
     messageModel
 } from "./dao/models/message.model.js"
+import MongoStore from "connect-mongo"
+import session from "express-session"
 
 // conexion a BD
 const environment = async () => {
@@ -36,12 +40,24 @@ app.use(express.json())
 app.use(express.urlencoded({
     extended: true
 }))
+app.use(
+    session({
+        store: MongoStore.create({
+            mongoUrl: 'mongodb+srv://mateocv759:pDCXwZ7aBxuHlh1a@ecommerce.aiopsql.mongodb.net/ecommerce?retryWrites=true&w=majority',
+            ttl: 100,
+        }),
+        secret: 'mateo1234',
+        resave: false,
+        saveUninitialized: false,
+    })
+);
 
 // routes
 app.use("/api/products", productRouter)
 app.use("/api/carts", cartRouter)
-// app.use("/api/chat", viewsRouter)
-app.use("/api/productCards", viewsRouter)
+app.use("/api/chat", viewsRouter)
+app.use('/api/sessions', sessionRouter);
+app.use('/', userRouter);
 
 // socketServer
 socketServer.on('connection', (socket) => {

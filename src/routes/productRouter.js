@@ -2,6 +2,7 @@ import {
     Router
 } from "express";
 import ProductManager from "../dao/database/productManager.js"
+import privateRoutes from "../middlewares/privateRoutes.js"
 
 const productManager = new ProductManager()
 
@@ -11,7 +12,7 @@ const router = Router()
 
 // traer todos los productos
 // puede recibir un limite de productos a devolver
-router.get("/", async (req, res) => {
+router.get("/", privateRoutes, async (req, res) => {
     const limit = req.query.limit ? parseInt(req.query.limit, 10) : 10
     const page = req.query.page ? parseInt(req.query.page, 10) : 1
     // la query se recibe con el formato ?query={"nombre": "Mateo"}
@@ -20,8 +21,11 @@ router.get("/", async (req, res) => {
 
     const products = await productManager.getProducts(limit, page, query, sort)
 
+    const first_name = req.session.first_name
+    const rol = req.session.rol
 
-    res.render('products', {products})
+
+    res.render('products', {products, first_name, rol})
 })
 
 // traer un producto por su id
