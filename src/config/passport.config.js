@@ -1,5 +1,6 @@
 import passport from "passport";
 import LocalStrategy from 'passport-local'
+import GithubStrategy from 'passport-github2'
 import bcrypt from 'bcrypt'
 import {
     userModel
@@ -55,11 +56,40 @@ const initializePassport = () => {
         }
     }))
 
+    passport.use('github', new GithubStrategy({
+        clientID: 'Iv1.94a19da2816b90f4',
+        clientSecret: '8aa668d469ce88de8ff51ad30aedf7636cdedb0f',
+        callbackURL: 'http://localhost:8080/api/sessions/githubcallback',
+        scope: ['user:email']
+    }, async (accessToken, refreshToken, profile, done) => {
+        try {
+            const email = profile.emails[0].value;
+            const user = await userModel.findOne({
+                email
+            });
+            if (!user) {
+                const newUser = await userModel.create({
+                    first_name: profile._json.name,
+                    last_name: '',
+                    age: 18,
+                    password: '',
+                    email,
+                });
+
+                done(null, newUser);
+            } else {
+                done(null, user);
+            }
+        } catch (error) {
+            done(error);
+        }
+    }))
+
     passport.serializeUser((user, done) => {
         done(null, user._id)
     })
 
-    passport.deserializeUser(async (id, done)=>{
+    passport.deserializeUser(async (id, done) => {
         const user = await userModel.findById(id)
         done(null, user)
     })
