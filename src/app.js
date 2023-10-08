@@ -15,6 +15,8 @@ import {
 } from "./dao/models/message.model.js"
 import MongoStore from "connect-mongo"
 import session from "express-session"
+import initializePassport from "./config/passport.config.js"
+import passport from "passport"
 
 // conexion a BD
 const environment = async () => {
@@ -51,6 +53,10 @@ app.use(
         saveUninitialized: false,
     })
 );
+
+initializePassport()
+app.use(passport.initialize())
+app.use(passport.session())
 
 // routes
 app.use("/api/products", productRouter)
