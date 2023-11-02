@@ -5,18 +5,19 @@ import {
 } from 'socket.io'
 import handlebars from 'express-handlebars'
 import mongoose from 'mongoose'
-import productRouter from './routes/productRouter.js'
-import cartRouter from './routes/cartRouter.js'
-import viewsRouter from './routes/viewsRouter.js'
-import sessionRouter from './routes/sessionRouter.js'
-import userRouter from './routes/userRouter.js'
-import {
-    messageModel
-} from "./dao/models/message.model.js"
 import MongoStore from "connect-mongo"
 import session from "express-session"
-import initializePassport from "./config/passport.config.js"
 import passport from "passport"
+
+import cartRouter from './routes/cart.router.js'
+import productRouter from './routes/product.router.js'
+import viewsRouter from './routes/views.router.js'
+import sessionRouter from './routes/session.router.js'
+import userRouter from './routes/user.router.js'
+import {
+    messageModel
+} from "./dao/models/mongo/message.model.js"
+import initializePassport from "./config/passport.config.js"
 
 // conexion a BD
 const environment = async () => {
