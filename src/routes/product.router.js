@@ -1,7 +1,7 @@
 import {
     Router
 } from "express";
-import ProductManager from "../dao/database/productManager.js"
+import ProductManager from "../controllers/product.manager.js"
 import privateRoutes from "../middlewares/privateRoutes.js"
 
 const productManager = new ProductManager()

@@ -1,7 +1,7 @@
 import {
     Router
 } from "express";
-import CartManager from "../dao/database/cartManager.js";
+import CartManager from "../controllers/cart.manager.js";
 
 // instancio la clase
 const cartManager = new CartManager()
@@ -25,7 +25,6 @@ router.post("/", async (req, res) => {
 router.get("/:cid", async (req, res) => {
     const idCarrito = req.params.cid
     const respuesta = await cartManager.getCarritoPorId(idCarrito)
-    console.log(respuesta)
     if (respuesta.error) {
         res.status(404).send(respuesta)
     } else {
@@ -54,45 +53,45 @@ router.delete("/:cid/product/:pid", async (req, res) => {
     res.status(201).send(respuesta)
 })
 
-// actualizar los products del carrito
-router.put("/:cid", async (req, res) => {
-    const newProducts = req.body
-    const idCarrito = req.params.cid
+// // actualizar los products del carrito
+// router.put("/:cid", async (req, res) => {
+//     const newProducts = req.body
+//     const idCarrito = req.params.cid
 
-    const respuesta = await cartManager.updateCartProducts(idCarrito, newProducts)
+//     const respuesta = await cartManager.updateCartProducts(idCarrito, newProducts)
 
-    res.status(201).send(respuesta)
-})
+//     res.status(201).send(respuesta)
+// })
 
-// actualizar el quantity de algun producto guardado en un carrito
-router.put("/:cid/product/:pid", async (req, res) => {
-    const newQuantity = req.body
-    console.log(newQuantity)
-    const idCarrito = req.params.cid
-    const idProducto = req.params.pid
+// // actualizar el quantity de algun producto guardado en un carrito
+// router.put("/:cid/product/:pid", async (req, res) => {
+//     const newQuantity = req.body
+//     console.log(newQuantity)
+//     const idCarrito = req.params.cid
+//     const idProducto = req.params.pid
 
-    const respuesta = await cartManager.updateProductQuantity(newQuantity, idCarrito, idProducto)
+//     const respuesta = await cartManager.updateProductQuantity(newQuantity, idCarrito, idProducto)
 
-    res.status(201).send(respuesta)
-})
+//     res.status(201).send(respuesta)
+// })
 
-// eliminar todos los productos del carrito
-router.delete("/:cid", async (req, res) => {
-    const idCarrito = req.params.cid
+// // eliminar todos los productos del carrito
+// router.delete("/:cid", async (req, res) => {
+//     const idCarrito = req.params.cid
 
-    const respuesta = await cartManager.deleteCartProducts(idCarrito)
+//     const respuesta = await cartManager.deleteCartProducts(idCarrito)
 
-    res.status(201).send(respuesta)
-})
+//     res.status(201).send(respuesta)
+// })
 
-// eliminar un carrito
-router.delete("/deleteCart/:cid", async (req, res) => {
-    const idCarrito = req.params.cid
+// // eliminar un carrito
+// router.delete("/deleteCart/:cid", async (req, res) => {
+//     const idCarrito = req.params.cid
 
-    const respuesta = await cartManager.deleteCart(idCarrito)
+//     const respuesta = await cartManager.deleteCart(idCarrito)
 
-    res.status(201).send(respuesta)
-})
+//     res.status(201).send(respuesta)
+// })
 
 
 export default router

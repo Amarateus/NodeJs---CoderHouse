@@ -11,7 +11,16 @@ const userSchema = new mongoose.Schema({
     rol: {
         type: String,
         default: "usuario",
-    }
+    },
+    // carts: {
+    //     type: [{
+    //         cart: {
+    //             type: mongoose.Schema.Types.ObjectId,
+    //             ref: 'carts',
+    //         }
+    //     }],
+    //     default: [],
+    // },
 });
 
 const userModel = mongoose.model(userCollection, userSchema);

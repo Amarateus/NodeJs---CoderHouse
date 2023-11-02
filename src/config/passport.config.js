@@ -4,7 +4,7 @@ import GithubStrategy from 'passport-github2'
 import bcrypt from 'bcrypt'
 import {
     userModel
-} from '../dao/models/user.model.js'
+} from '../dao/models/mongo/user.model.js'
 
 const initializePassport = () => {
     passport.use('register', new LocalStrategy({ // estrategia de Register local

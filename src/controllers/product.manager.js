@@ -1,20 +1,25 @@
 import {
     productModel
-} from "../models/product.model.js";
+} from "../dao/models/mongo/product.model.js";
+import ProductService from "../services/product.service.js";
+
+const productService = new ProductService()
 
 export default class ProductManager {
     // traer todos los productos
     async getProducts(limit, page, query, sort) {
 
         let objQuery = query
-        if (typeof(query) === "string") {
+        if (typeof (query) === "string") {
             objQuery = JSON.parse(query)
         }
 
         const pag = await productModel.paginate(objQuery, {
             page: page,
             limit: limit,
-            sort: {price: sort},
+            sort: {
+                price: sort
+            },
             lean: true
         })
 
@@ -70,17 +75,8 @@ export default class ProductManager {
 
     // traer un producto por su id
     async getProductById(id) {
-        try {
-            const product = await productModel.findOne({
-                _id: id
-            }).lean()
-
-            return product
-        } catch {
-            return {
-                error: `No se hayo el producto con id: ${id}`
-            }
-        }
+        const respuesta = await productService.getProductById(id)
+        return respuesta
     }
 
     // actualizar un producto

@@ -1,9 +1,6 @@
 import {
     Router
 } from 'express';
-import {
-    userModel
-} from '../dao/models/user.model.js';
 import publicRoutes from '../middlewares/publicRoutes.js';
 import passport from 'passport';
 
