@@ -14,14 +14,7 @@ export default class ProductManager {
             objQuery = JSON.parse(query)
         }
 
-        const pag = await productModel.paginate(objQuery, {
-            page: page,
-            limit: limit,
-            sort: {
-                price: sort
-            },
-            lean: true
-        })
+        const pag = await productService.getProducts(objQuery, page, limit, sort)
 
         const queryString = JSON.stringify(objQuery)
 
@@ -50,9 +43,7 @@ export default class ProductManager {
         }
 
         // corroboro que el producto no este registrado aun
-        const productExist = await productModel.find({
-            code: code
-        })
+        const productExist = await productService.getProductByCode(code)
 
         if (productExist.length === 1) {
             return {
@@ -60,7 +51,7 @@ export default class ProductManager {
             }
         }
 
-        const newProduct = productModel.create({
+        const newProduct = await productService.createProduct(
             title,
             category,
             description,
@@ -69,7 +60,8 @@ export default class ProductManager {
             stock,
             thumbnail,
             status
-        })
+        )
+
         return newProduct
     }
 
@@ -82,9 +74,7 @@ export default class ProductManager {
     // actualizar un producto
     async updateProduct(id, newProduct) {
         try {
-            const update = await productModel.updateOne({
-                _id: id
-            }, newProduct)
+            const update = await productService.updateProduct(id, newProduct)
 
             return update
         } catch {
@@ -96,9 +86,7 @@ export default class ProductManager {
 
     async deleteProductById(id) {
         try {
-            const deleteProduct = await productModel.deleteOne({
-                _id: id
-            })
+            const deleteProduct = await productService.deleteProduct(id)
 
             return deleteProduct
         } catch {

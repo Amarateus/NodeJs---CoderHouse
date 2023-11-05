@@ -4,6 +4,7 @@ import {
     Server
 } from 'socket.io'
 import handlebars from 'express-handlebars'
+import dotenv from 'dotenv'
 import mongoose from 'mongoose'
 import MongoStore from "connect-mongo"
 import session from "express-session"
@@ -19,9 +20,10 @@ import {
 } from "./dao/models/mongo/message.model.js"
 import initializePassport from "./config/passport.config.js"
 
+dotenv.config({path: './src/.env'})
 // conexion a BD
 const environment = async () => {
-    await mongoose.connect('mongodb+srv://mateocv759:pDCXwZ7aBxuHlh1a@ecommerce.aiopsql.mongodb.net/ecommerce?retryWrites=true&w=majority')
+    await mongoose.connect(process.env.MONGO_CONNECT)
 }
 await environment()
 
@@ -46,10 +48,10 @@ app.use(express.urlencoded({
 app.use(
     session({
         store: MongoStore.create({
-            mongoUrl: 'mongodb+srv://mateocv759:pDCXwZ7aBxuHlh1a@ecommerce.aiopsql.mongodb.net/ecommerce?retryWrites=true&w=majority',
+            mongoUrl: process.env.MONGO_CONNECT,
             ttl: 100,
         }),
-        secret: 'mateo1234',
+        secret: process.env.SECRET,
         resave: false,
         saveUninitialized: false,
     })
