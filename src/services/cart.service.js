@@ -41,4 +41,12 @@ export default class CartService {
 
         return updateCart
     }
+
+    async deleteCart(cartId) {
+        const deletedCart = await cartModel.deleteOne({
+            _id: cartId
+        })
+
+        return deletedCart
+    }
 }

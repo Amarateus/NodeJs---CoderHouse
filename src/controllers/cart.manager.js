@@ -1,6 +1,5 @@
 import ProductManager from "../controllers/product.manager.js"
 import CartService from "../services/cart.service.js";
-import { cartModel } from "../dao/models/mongo/cart.model.js";
 
 const productManager = new ProductManager()
 const cartService = new CartService()
@@ -95,75 +94,65 @@ export default class CartManager {
     }
 
 
-//     // actualizar el quantity de algun producto guardado en un carrito
-//     async updateProductQuantity(newQuantity, cartId, prodId) {
-//         // el cart existe en la bd?
-//         const cartExist = await this.getCarritoPorId(cartId)
-//         if (cartExist.error) {
-//             return cartExist
-//         }
+    // actualizar el quantity de algun producto guardado en un carrito
+    async updateProductQuantity(newQuantity, cartId, prodId) {
+        // el cart existe en la bd?
+        const cartExist = await this.getCarritoPorId(cartId)
+        if (cartExist.error) {
+            return cartExist
+        }
 
-//         const cartProducts = cartExist.products
+        const cartProducts = cartExist.products
 
-//         const productExist = cartProducts.find((product) => product.product === prodId)
+        const productExist = cartProducts.find((product) => product.product === prodId)
 
-//         if (productExist === undefined) {
-//             return {
-//                 error: `El producto con id: ${prodId} no se encuentra agregado al carrito`
-//             }
-//         }
+        if (productExist === undefined) {
+            return {
+                error: `El producto con id: ${prodId} no se encuentra agregado al carrito`
+            }
+        }
 
-//         const newProductsQuantity = cartProducts.map((product) => {
-//             if (product.product === prodId) {
-//                 return {
-//                     product: prodId,
-//                     quantity: newQuantity.quantity
-//                 }
-//             } else {
-//                 return product
-//             }
-//         })
+        const newProductsQuantity = cartProducts.map((product) => {
+            if (product.product === prodId) {
+                return {
+                    product: prodId,
+                    quantity: newQuantity.quantity
+                }
+            } else {
+                return product
+            }
+        })
 
-//         const updateCart = await cartModel.updateOne({
-//             _id: cartId
-//         }, {
-//             products: newProductsQuantity
-//         })
+        const updateCart = await cartService.updateCartProducts(cartId, newProductsQuantity)
 
-//         return updateCart
+        return updateCart
 
-//     }
+    }
 
-//     // eliminar los productos de un carrito
-//     async deleteCartProducts(cartId) {
-//         // el cart existe en la bd?
-//         const cartExist = await this.getCarritoPorId(cartId)
-//         if (cartExist.error) {
-//             return cartExist
-//         }
+    // eliminar los productos de un carrito
+    async deleteCartProducts(cartId) {
+        // el cart existe en la bd?
+        const cartExist = await this.getCarritoPorId(cartId)
+        if (cartExist.error) {
+            return cartExist
+        }
 
-//         const newCart = await cartModel.updateOne({
-//             _id: cartId
-//         }, {
-//             products: []
-//         })
+        const newCart = await cartService.updateCartProducts(cartId, [])
 
-//         return newCart
-//     }
+        return newCart
+    }
 
-//     // eliminar un carrito
-//     async deleteCart(cartId) {
-//         try {
-//             const deletedCart = await cartModel.deleteOne({
-//                 _id: cartId
-//             })
-//             return deletedCart
-//         } catch {
-//             return {
-//                 error: "El carrito que desea eliminar no existe"
-//             }
-//         }
-//     }
+    // eliminar un carrito
+    async deleteCart(cartId) {
+        try {
+            const deletedCart = await cartService.deleteCart(cartId)
+            return deletedCart
+        } catch {
+            return {
+                error: "El carrito que desea eliminar no existe"
+            }
+        }
+    }
 
 
 
