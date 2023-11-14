@@ -1,34 +1,37 @@
 import {
     Router
 } from "express";
-import CartManager from "../controllers/cart.manager.js";
+import CartController from "../controllers/cart.controller.js";
 
 // instancio la clase
-const cartManager = new CartManager()
+const cartController = new CartController()
 
 // instancio Router
 const router = Router()
 
 // traer todos los carritos
 router.get("/", async (req, res) => {
-    const carts = await cartManager.getAllCarts()
+    const carts = await cartController.getAllCarts()
     res.status(200).send(carts)
 })
 
 // crear un nuevo carrito
 router.post("/", async (req, res) => {
-    const respuesta = await cartManager.nuevoCarrito()
+    const respuesta = await cartController.nuevoCarrito()
     res.status(201).send(respuesta)
 })
 
 // traer un carrito por su id
 router.get("/:cid", async (req, res) => {
     const idCarrito = req.params.cid
-    const respuesta = await cartManager.getCarritoPorId(idCarrito)
+    const respuesta = await cartController.getCarritoPorId(idCarrito)
+
     if (respuesta.error) {
         res.status(404).send(respuesta)
     } else {
-        res.render('cart', {respuesta})
+        res.render('cart', {
+            respuesta
+        })
     }
 })
 
@@ -38,7 +41,7 @@ router.post("/:cid/product/:pid", async (req, res) => {
     const idCarrito = req.params.cid
     const idProducto = req.params.pid
 
-    const respuesta = await cartManager.updateCarrito(idCarrito, idProducto)
+    const respuesta = await cartController.updateCarrito(idCarrito, idProducto)
 
     res.status(201).send(respuesta)
 })
@@ -48,7 +51,7 @@ router.delete("/:cid/product/:pid", async (req, res) => {
     const idCarrito = req.params.cid
     const idProducto = req.params.pid
 
-    const respuesta = await cartManager.deleteCartProduct(idCarrito, idProducto)
+    const respuesta = await cartController.deleteCartProduct(idCarrito, idProducto)
 
     res.status(201).send(respuesta)
 })
@@ -58,7 +61,7 @@ router.put("/:cid", async (req, res) => {
     const newProducts = req.body
     const idCarrito = req.params.cid
 
-    const respuesta = await cartManager.updateCartProducts(idCarrito, newProducts)
+    const respuesta = await cartController.updateCartProducts(idCarrito, newProducts)
 
     res.status(201).send(respuesta)
 })
@@ -69,7 +72,7 @@ router.put("/:cid/product/:pid", async (req, res) => {
     const idCarrito = req.params.cid
     const idProducto = req.params.pid
 
-    const respuesta = await cartManager.updateProductQuantity(newQuantity, idCarrito, idProducto)
+    const respuesta = await cartController.updateProductQuantity(newQuantity, idCarrito, idProducto)
 
     res.status(201).send(respuesta)
 })
@@ -78,7 +81,7 @@ router.put("/:cid/product/:pid", async (req, res) => {
 router.delete("/:cid", async (req, res) => {
     const idCarrito = req.params.cid
 
-    const respuesta = await cartManager.deleteCartProducts(idCarrito)
+    const respuesta = await cartController.deleteCartProducts(idCarrito)
 
     res.status(201).send(respuesta)
 })
@@ -87,9 +90,18 @@ router.delete("/:cid", async (req, res) => {
 router.delete("/deleteCart/:cid", async (req, res) => {
     const idCarrito = req.params.cid
 
-    const respuesta = await cartManager.deleteCart(idCarrito)
+    const respuesta = await cartController.deleteCart(idCarrito)
 
     res.status(201).send(respuesta)
+})
+
+router.get("/:cid/purchase", async (req, res) => {
+    const cartId = req.params.cid
+    const user = req.session.email
+
+    const finalCompra = await cartController.finalCompra(cartId, user)
+
+    res.send(finalCompra)
 })
 
 

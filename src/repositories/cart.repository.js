@@ -2,7 +2,7 @@ import {
     cartModel
 } from "../dao/models/mongo/cart.model.js";
 
-export default class CartService {
+export default class CartRepository {
     // traer todos los carritos
     async getAllCarts () {
         const carts = await cartModel.find().lean()
@@ -16,17 +16,17 @@ export default class CartService {
     }
 
     // traer carrito por su id
-    async getCarritoPorId(id) {
+    async getCarritoPorId(cartId) {
         try {
             const cart = await cartModel.findOne({
-                _id: id
+                _id: cartId
             }).populate('products.product').lean()
 
             return cart
 
         } catch {
             return {
-                error: `El carrito con id ${id} no existe`
+                error: `El carrito con id ${cartId} no existe`
             }
         }
     }

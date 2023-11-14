@@ -20,7 +20,7 @@ import {
 } from "./dao/models/mongo/message.model.js"
 import initializePassport from "./config/passport.config.js"
 
-dotenv.config({path: './src/.env'})
+dotenv.config()
 // conexion a BD
 const environment = async () => {
     await mongoose.connect(process.env.MONGO_CONNECT)
@@ -49,7 +49,7 @@ app.use(
     session({
         store: MongoStore.create({
             mongoUrl: process.env.MONGO_CONNECT,
-            ttl: 100,
+            ttl: 10000,
         }),
         secret: process.env.SECRET,
         resave: false,

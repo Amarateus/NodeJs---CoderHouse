@@ -1,10 +1,10 @@
 import {
     Router
 } from "express";
-import ProductManager from "../controllers/product.manager.js"
+import ProductController from "../controllers/product.controller.js"
 import privateRoutes from "../middlewares/privateRoutes.js"
 
-const productManager = new ProductManager()
+const productController = new ProductController()
 
 const router = Router()
 
@@ -19,11 +19,13 @@ router.get("/", privateRoutes, async (req, res) => {
     const query = req.query.query ? req.query.query : {}
     const sort = req.query.sort ? parseInt(req.query.sort, 10) : 1
 
-    const products = await productManager.getProducts(limit, page, query, sort)
+    const products = await productController.getProducts(limit, page, query, sort)
 
     const first_name = req.session.first_name
     const rol = req.session.rol
 
+    const usuario = req.session.email
+    console.log(usuario)
 
     res.render('products', {products, first_name, rol})
 })
@@ -31,7 +33,7 @@ router.get("/", privateRoutes, async (req, res) => {
 // traer un producto por su id
 router.get("/:pid", async (req, res) => {
     const productId = req.params.pid
-    const respuesta = await productManager.getProductById(productId)
+    const respuesta = await productController.getProductById(productId)
     res.status(200).send(respuesta)
 })
 
@@ -45,7 +47,7 @@ router.post("/", async (req, res) => {
         code,
         stock
     } = req.body
-    const respuesta = await productManager.addProduct(title, category, description, price, code, stock)
+    const respuesta = await productController.addProduct(title, category, description, price, code, stock)
 
     if (respuesta.error) {
         return res.status(400).send(respuesta)
@@ -58,7 +60,7 @@ router.post("/", async (req, res) => {
 router.put("/:pid", async (req, res) => {
     const productId = req.params.pid
     const newProduct = req.body
-    const respuesta = await productManager.updateProduct(productId, newProduct)
+    const respuesta = await productController.updateProduct(productId, newProduct)
 
     if (respuesta.error) {
         return res.status(400).send(respuesta)
@@ -72,7 +74,7 @@ router.put("/:pid", async (req, res) => {
 // eliminar un producto
 router.delete("/:pid", async (req, res) => {
     const productId = req.params.pid
-    const respuesta = await productManager.deleteProductById(productId)
+    const respuesta = await productController.deleteProductById(productId)
 
     if (respuesta.error) {
         res.status(400).send(respuesta)
