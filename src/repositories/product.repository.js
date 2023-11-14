@@ -2,7 +2,7 @@ import {
     productModel
 } from "../dao/models/mongo/product.model.js";
 
-export default class ProductService {
+export default class ProductRepository {
 
     async getProducts(objQuery, page, limit, sort) {
         const pag = await productModel.paginate(objQuery, {

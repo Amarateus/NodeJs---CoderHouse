@@ -1,25 +1,28 @@
-import ProductManager from "../controllers/product.manager.js"
-import CartService from "../services/cart.service.js";
+import ProductController from "./product.controller.js"
+import CartRepository from "../repositories/cart.repository.js";
+import TicketRepository from "../repositories/ticket.repository.js";
 
-const productManager = new ProductManager()
-const cartService = new CartService()
+const productController = new ProductController()
+const cartRepository = new CartRepository()
+const ticketRepository = new TicketRepository()
 
-export default class CartManager {
+export default class CartController {
     // traer todos los carritos
     async getAllCarts() {
-        const carts = await cartService.getAllCarts()
+        const carts = await cartRepository.getAllCarts()
         return carts
     }
 
     // crear un nuevo carrito
     async nuevoCarrito(cart) {
-        const nuevoCarrito = await cartService.nuevoCarrito(cart)
+        const nuevoCarrito = await cartRepository.nuevoCarrito(cart)
         return `Nuevo carrito creado con id: ${nuevoCarrito.id}`
     }
 
     // traer carrito por su id
     async getCarritoPorId(id) {
-        const respuesta = await cartService.getCarritoPorId(id)
+        const respuesta = await cartRepository.getCarritoPorId(id)
+
         return respuesta
     }
 
@@ -28,7 +31,7 @@ export default class CartManager {
     async updateCarrito(idCart, idProduct) {
 
         // el producto existe en la bd?
-        const existeProducto = await productManager.getProductById(idProduct)
+        const existeProducto = await productController.getProductById(idProduct)
         if (existeProducto.error) {
             return existeProducto
         }
@@ -41,7 +44,7 @@ export default class CartManager {
 
         const cartProducts = cartExist.products
 
-        const producto = await productManager.getProductById(idProduct)
+        const producto = await productController.getProductById(idProduct)
 
         const productExist = cartProducts.find((product) => product.product.code === producto.code)
 
@@ -67,7 +70,7 @@ export default class CartManager {
     // elimiar un producto del carrito deseado
     async deleteCartProduct(idCart, idProduct) {
         // el producto existe en la bd?
-        const existeProducto = await productManager.getProductById(idProduct)
+        const existeProducto = await productController.getProductById(idProduct)
         if (existeProducto.error) {
             return existeProducto
         }
@@ -81,14 +84,14 @@ export default class CartManager {
 
         const newProductsList = cartProducts.filter((product) => product.product._id != idProduct)
 
-        const updateCart = await cartService.updateCartProducts(idCart, newProductsList)
+        const updateCart = await cartRepository.updateCartProducts(idCart, newProductsList)
 
         return updateCart
     }
 
     // actualizar los products del carrito
     async updateCartProducts(cartId, products) {
-        const respuesta = await cartService.updateCartProducts(cartId, products)
+        const respuesta = await cartRepository.updateCartProducts(cartId, products)
 
         return respuesta
     }
@@ -123,7 +126,7 @@ export default class CartManager {
             }
         })
 
-        const updateCart = await cartService.updateCartProducts(cartId, newProductsQuantity)
+        const updateCart = await cartRepository.updateCartProducts(cartId, newProductsQuantity)
 
         return updateCart
 
@@ -137,7 +140,7 @@ export default class CartManager {
             return cartExist
         }
 
-        const newCart = await cartService.updateCartProducts(cartId, [])
+        const newCart = await cartRepository.updateCartProducts(cartId, [])
 
         return newCart
     }
@@ -145,7 +148,7 @@ export default class CartManager {
     // eliminar un carrito
     async deleteCart(cartId) {
         try {
-            const deletedCart = await cartService.deleteCart(cartId)
+            const deletedCart = await cartRepository.deleteCart(cartId)
             return deletedCart
         } catch {
             return {
@@ -154,6 +157,61 @@ export default class CartManager {
         }
     }
 
+    async finalCompra(cartId, user) {
+        const cart = await this.getCarritoPorId(cartId)
+        if (cart.error) {
+            return cart
+        }
+
+        const cartProducts = cart.products
+
+        const productsWithStock = cartProducts.filter((producto) =>
+            producto.quantity < producto.product.stock || producto.quantity === producto.product.stock)
+
+        const productsWithOutStock = cartProducts.filter((producto) =>
+            producto.quantity > producto.product.stock)
+
+        // resto el stock comprado de la BD de products
+        if (productsWithStock.length > 0) {
+            const stockUpdate = productsWithStock.forEach(async (product) => {
+                const stock = product.product.stock - product.quantity
+                const respuesta = await productController.updateProduct(product.product._id, {
+                    stock: stock
+                })
+            })
+
+            const amount = productsWithStock.reduce((acc, product) => acc + product.product.price * product.quantity, 0)
+
+            const purchaseDTO ={
+                amount: amount,
+                purchaser: user
+            }
+            // realizo la compra
+            const newPurchase = await ticketRepository.newTicket(purchaseDTO)
+
+
+        }
+
+        if (productsWithOutStock.length > 0) {
+            const productsWithOutStockDTO = productsWithOutStock.map((producto) => {
+                return {
+                    id: producto.product._id,
+                    title: producto.product.title
+                }
+            })
+            // dejo el cart del usario con los productos que no pudo comprar
+            const cartUpdate = await this.updateCartProducts(cartId, productsWithOutStock)
+
+            return {
+                "No se pudieron comprar los siguientes productos": productsWithOutStockDTO
+            }
+        }
+
+        // si se pudieron comprar todos los productos vaciamos el cart
+        const cartUpdate = await this.updateCartProducts(cartId, [])
+        return {status: "Success", message: "Se compraron todos los productos"}
+
+    }
 
 
 
