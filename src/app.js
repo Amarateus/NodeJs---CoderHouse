@@ -15,6 +15,7 @@ import productRouter from './routes/product.router.js'
 import viewsRouter from './routes/views.router.js'
 import sessionRouter from './routes/session.router.js'
 import userRouter from './routes/user.router.js'
+import mockingRouter from './routes/mocking.router.js'
 import {
     messageModel
 } from "./dao/models/mongo/message.model.js"
@@ -67,6 +68,7 @@ app.use("/api/carts", cartRouter)
 app.use("/api/chat", viewsRouter)
 app.use('/api/sessions', sessionRouter);
 app.use('/', userRouter);
+app.use('/mockingProducts', mockingRouter)
 
 // socketServer
 socketServer.on('connection', (socket) => {
