@@ -5,6 +5,9 @@ import bcrypt from 'bcrypt'
 import {
     userModel
 } from '../dao/models/mongo/user.model.js'
+import CustomError from "../services/errors/cumtomErrors.js";
+import EErrors from "../services/errors/enumsErrors.js";
+import { generateUserErrorInfo } from "../services/errors/errorsInfo.js/userErrorInfo.js";
 
 const initializePassport = () => {
     passport.use('register', new LocalStrategy({ // estrategia de Register local
@@ -16,6 +19,16 @@ const initializePassport = () => {
             last_name,
             age
         } = req.body
+
+        if (!first_name || !last_name || !age || !username || !password){
+            CustomError.createError({
+                name: "Error al crear usuario",
+                cause: generateUserErrorInfo({first_name, last_name, age, username, password}),
+                message: "Error al intentar crear un usuario nuevo",
+                code: EErrors.INVALID_TYPES_ERROR
+            })
+        }
+        
         try {
             const exist = await userModel.findOne({
                 email: username
@@ -23,6 +36,7 @@ const initializePassport = () => {
             if (exist) {
                 return done(null, false)
             }
+
             const user = await userModel.create({
                 first_name,
                 last_name,
