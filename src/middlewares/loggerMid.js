@@ -3,7 +3,7 @@ import {
 } from "../services/logger.js";
 
 export const loggerMid = async (req, res, next) => {
-    logger.info("Nivel info")
+    logger.info("Nivel info: Logger Middleware")
     try {
         await next()
     } catch (err) {

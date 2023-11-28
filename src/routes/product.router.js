@@ -25,7 +25,6 @@ router.get("/", privateRoutes, async (req, res) => {
     const rol = req.session.rol
 
     const usuario = req.session.email
-    console.log(usuario)
 
     res.render('products', {products, first_name, rol})
 })
