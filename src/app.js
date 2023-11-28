@@ -1,6 +1,7 @@
 // trabajando desde el back
 import express from "express"
 import { loggerMid } from "./middlewares/loggerMid.js"
+import { logger } from "./services/logger.js"
 import {
     Server
 } from 'socket.io'
@@ -33,7 +34,7 @@ await environment()
 // Config del server
 const app = express()
 const httpServer = app.listen(8080, () => {
-    console.log("Listening on Port 8080")
+    logger.info("Listening on PORT: 8080")
 })
 const socketServer = new Server(httpServer)
 
@@ -76,7 +77,7 @@ app.use(errorHandler)
 
 // socketServer
 socketServer.on('connection', (socket) => {
-    console.log('Se conectó', socket.id)
+    logger.info(`Se conectó ${socket.id}`)
 
     socket.on("mensaje", async (data) => {
         await messageModel.create(data)
